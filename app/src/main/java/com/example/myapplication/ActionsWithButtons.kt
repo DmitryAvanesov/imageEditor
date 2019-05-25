@@ -10,11 +10,12 @@ class ActionsWithButtons {
                     cameraButton: ImageButton, imageButton: ImageButton, backButton: Button,
                     returnButton: Button, rotateButton: Button, saveButton: Button, zoomButton: Button,
                     unsharpMaskButton: Button, blurButton: Button, scaleButton: Button, algorithmsButton: Button,
-                    zoomSpinner: Spinner, scaleSpinner: Spinner){
+                    zoomSpinner: Spinner, scaleSpinner: Spinner, button: Button){
         if (firstFilterButton.visibility == View.INVISIBLE){
             cameraButton.visibility = View.INVISIBLE
             imageButton.visibility = View.INVISIBLE
             algorithmsButton.visibility = View.INVISIBLE
+            button.visibility = View.INVISIBLE
             firstFilterButton.visibility = View.VISIBLE
             secondFilterButton.visibility = View.VISIBLE
             ThirdFilterButton.visibility = View.VISIBLE
@@ -30,6 +31,7 @@ class ActionsWithButtons {
             scaleSpinner.visibility = View.VISIBLE
         }
         else {
+            button.visibility = View.VISIBLE
             firstFilterButton.visibility = View.INVISIBLE
             secondFilterButton.visibility = View.INVISIBLE
             ThirdFilterButton.visibility = View.INVISIBLE

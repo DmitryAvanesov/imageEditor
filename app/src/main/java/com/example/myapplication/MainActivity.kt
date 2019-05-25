@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var returnBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
     private var backBitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
     private val edit = EditImage(backBitmap)
+    private val bil = BilinearFilter()
     private val actionBut = ActionsWithButtons()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,19 +62,42 @@ class MainActivity : AppCompatActivity() {
         // SHOW FILTERS BUTTONS
         toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
             cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
-            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner) }
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, button) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
         thirdFilter.setOnClickListener { edit.filter(mainImage, 3) }
-        blurButton.setOnClickListener { edit.blur(mainImage, coordinates) }
+        var blurCounter = 0
+        blurButton.setOnClickListener {
+            if (blurCounter % 2 == 0) {
+                Toast.makeText(this, "Blur activated", Toast.LENGTH_SHORT).show()
+                edit.blur(mainImage)
+            }
+            else {
+                Toast.makeText(this, "Blur disabled", Toast.LENGTH_SHORT).show()
+                mainImage.setOnTouchListener(null)
+            }
+            blurCounter++
+        }
         unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
         returnButton.setOnClickListener { edit.returnImage(mainImage, returnBitmap) }
         backButton.setOnClickListener {
             backBitmap = edit.returnBackBitmap()
             edit.returnImage(mainImage, backBitmap)
         }
-        rotateButton.setOnClickListener { edit.rotateImage(mainImage) }
+        rotateButton.setOnClickListener { edit.rotateImage(mainImage, this) }
+        var bilCounter = 0
+        button.setOnClickListener {
+            if (bilCounter % 2 == 0) {
+                bil.pickPoints(mainImage, this)
+                Toast.makeText(this, "BF activated", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, "BF disabled", Toast.LENGTH_SHORT).show()
+                mainImage.setOnTouchListener(null)
+            }
+            bilCounter++
+        }
 
         zoomSpinner.visibility = View.INVISIBLE
         scaleSpinner.visibility = View.INVISIBLE
