@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         // SHOW FILTERS BUTTONS
         toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
             cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
-            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton) }
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton, coefficient) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             }
             blurCounter++
         }
-        unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage) }
+        unsharpMaskButton.setOnClickListener { edit.unsharpMask(this, mainImage, coefficient) }
         returnButton.setOnClickListener { edit.returnImage(mainImage, returnBitmap) }
         backButton.setOnClickListener {
             backBitmap = edit.returnBackBitmap()
@@ -99,6 +99,7 @@ class MainActivity : AppCompatActivity() {
 
         zoomSpinner.visibility = View.INVISIBLE
         scaleSpinner.visibility = View.INVISIBLE
+        coefficient.visibility = View.INVISIBLE
     }
 
     // SO GUYS THAT'S MY F*CKING CHECK FOR PERMISSIONS OK?

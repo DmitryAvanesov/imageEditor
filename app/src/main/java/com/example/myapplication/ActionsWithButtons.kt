@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 
@@ -10,7 +11,8 @@ class ActionsWithButtons {
                     cameraButton: ImageButton, imageButton: ImageButton, backButton: Button,
                     returnButton: Button, rotateButton: Button, saveButton: Button, zoomButton: Button,
                     unsharpMaskButton: Button, blurButton: Button, scaleButton: Button, algorithmsButton: Button,
-                    zoomSpinner: Spinner, scaleSpinner: Spinner, button: Button){
+                    zoomSpinner: Spinner, scaleSpinner: Spinner, button: Button, coefficient: EditText
+    ){
         if (firstFilterButton.visibility == View.INVISIBLE){
             cameraButton.visibility = View.INVISIBLE
             imageButton.visibility = View.INVISIBLE
@@ -20,6 +22,7 @@ class ActionsWithButtons {
             secondFilterButton.visibility = View.VISIBLE
             ThirdFilterButton.visibility = View.VISIBLE
             backButton.visibility = View.VISIBLE
+            coefficient.visibility = View.VISIBLE
             returnButton.visibility = View.VISIBLE
             rotateButton.visibility = View.VISIBLE
             saveButton.visibility = View.VISIBLE
@@ -41,6 +44,7 @@ class ActionsWithButtons {
             saveButton.visibility = View.INVISIBLE
             zoomButton.visibility = View.INVISIBLE
             unsharpMaskButton.visibility = View.INVISIBLE
+            coefficient.visibility = View.INVISIBLE
             blurButton.visibility = View.INVISIBLE
             scaleButton.visibility = View.INVISIBLE
             zoomSpinner.visibility = View.INVISIBLE
@@ -48,6 +52,7 @@ class ActionsWithButtons {
             cameraButton.visibility = View.VISIBLE
             imageButton.visibility = View.VISIBLE
             algorithmsButton.visibility = View.VISIBLE
+
         }
     }
 }

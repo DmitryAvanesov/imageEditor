@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import kotlin.math.max
 import kotlin.math.min
@@ -388,7 +389,7 @@ class EditImage(BTMP: Bitmap) {
         })
     }
 
-    fun unsharpMask(context: Context, mainImage: ImageView) {
+    fun unsharpMask(context: Context, mainImage: ImageView, coef: EditText) {
         val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
         val height = oldBitmap.height
         val width = oldBitmap.width
@@ -443,11 +444,11 @@ class EditImage(BTMP: Bitmap) {
             val redNew = newBitmapPixelsArray[i] and 0x00ff0000 shr 16
             val greenNew = newBitmapPixelsArray[i] and 0x0000ff00 shr 8
             val blueNew = newBitmapPixelsArray[i] and 0x000000ff shr 0
-
+            val r = coef.text.toString().toInt()
             newBitmapPixelsArray[i] = ((0xff000000) or (
-                    (min(redOld.toLong() + (max(redOld.toLong() - redNew.toLong(), 0)), 255)) shl 16) or
-                    (min(greenOld.toLong() + (max(greenOld.toLong() - greenNew.toLong(), 0)), 255) shl 8) or
-                    (min(blueOld.toLong() + (max(blueOld.toLong() - blueNew.toLong(), 0)), 255) shl 0)).toInt()
+                    (min(redOld.toLong() + (max((redOld.toLong() - redNew.toLong())*r, 0)), 255)) shl 16) or
+                    (min(greenOld.toLong() + (max((greenOld.toLong() - greenNew.toLong())*r, 0)), 255) shl 8) or
+                    (min(blueOld.toLong() + (max((blueOld.toLong() - blueNew.toLong())*r, 0)), 255) shl 0)).toInt()
         }
 
         newBitmap.setPixels(newBitmapPixelsArray, 0, width, 0, 0, width, height)
