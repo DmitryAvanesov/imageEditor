@@ -62,7 +62,7 @@ class BilinearFilter {
         return result
     }
 
-    private fun bilinearFilter(mainImage : ImageView, rawCoordinates: Array<IntArray>) :Bitmap   
+    private fun bilinearFilter(mainImage : ImageView, rawCoordinates: Array<IntArray>) :Bitmap
     {
         val pointsCoordinates = Array(3) { DoubleArray(3) }
         val matr = Array(3) { DoubleArray(3) }
@@ -86,7 +86,7 @@ class BilinearFilter {
         matr[2][0] = 1.0
         matr[2][1] = 1.0
         matr[2][2] = 1.0
-        val aMatrix = findInverse(pointsCoordinates)
+        val aMatrix = inverse.findInverse(pointsCoordinates)
         newMatr = matrixMultipl(matr, aMatrix)
         val angle:Double = Math.atan2(newMatr[1][0], newMatr[1][1])
         val sx:Double = Math.abs(sign(newMatr[0][0]) * sqrt(newMatr[0][0] * newMatr[0][0] + newMatr[0][1] * newMatr[0][1]))
@@ -127,11 +127,6 @@ class BilinearFilter {
         val green = Math.floor(((get(tex, x, y, width) shr 8 and 0xff) * newRatOpposite + (get(tex, x + 1, y, width) shr 8 and 0xff) * newRat) * anotherRatOpposite + ((get(tex, x, y + 1, width) shr 8 and 0xff) * newRatOpposite + (get(tex, x + 1, y + 1, width) shr 8 and 0xff) * newRat) * anotherRat).toInt()
         val blue = Math.floor(((get(tex, x, y, width) and 0xff) * newRatOpposite + (get(tex, x + 1, y,width) and 0xff) * newRat) * anotherRatOpposite + ((get(tex, x, y + 1, width) and 0xff) * newRatOpposite + (get(tex, x + 1, y + 1, width) and 0xff) * newRat) * anotherRat).toInt()
         return alpha and 0xff shl 24 or (red and 0xff shl 16) or (green and 0xff shl 8) or (blue and 0xff)
-    }
-
-    private fun findInverse(mat: Array<DoubleArray>): Array<DoubleArray> {
-        // GET AN INVERSE MATRIX
-        return inverse.findInverse(mat)
     }
     private fun bilinearInterpolate(bitmap: Bitmap, scale_x:Double, scale_y:Double) :Bitmap {
 
