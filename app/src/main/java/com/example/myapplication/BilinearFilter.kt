@@ -62,7 +62,7 @@ class BilinearFilter {
         return result
     }
 
-    private fun bilinearFilter(mainImage : ImageView, rawCoordinates: Array<IntArray>) :Bitmap   				//ГЛАВНЫЙ ФУНКЦИЯ
+    private fun bilinearFilter(mainImage : ImageView, rawCoordinates: Array<IntArray>) :Bitmap   
     {
         val pointsCoordinates = Array(3) { DoubleArray(3) }
         val matr = Array(3) { DoubleArray(3) }
