@@ -22,8 +22,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.text.DateFormat.getDateTimeInstance
 import java.util.*
-import kotlin.math.min
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -62,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         // SHOW FILTERS BUTTONS
         toolsButton.setOnClickListener{ actionBut.filterClick(firstFilter, secondFilter, thirdFilter,
             cameraButton, imageButton, backButton, returnButton, rotateButton, saveButton, zoomButton,
-            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, button) }
+            unsharpMaskButton, blurButton, scaleButton, algorithmsButtom, zoomSpinner, scaleSpinner, bfButton) }
         // NEGATIVE FILTER
         firstFilter.setOnClickListener { edit.filter(mainImage, 1) }
         secondFilter.setOnClickListener { edit.filter(mainImage, 2) }
@@ -87,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         }
         rotateButton.setOnClickListener { edit.rotateImage(mainImage, this) }
         var bilCounter = 0
-        button.setOnClickListener {
+        bfButton.setOnClickListener {
             if (bilCounter % 2 == 0) {
                 bil.pickPoints(mainImage, this)
                 Toast.makeText(this, "BF activated", Toast.LENGTH_SHORT).show()

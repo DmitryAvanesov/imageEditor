@@ -45,136 +45,136 @@ class BilinearFilter {
         )
     }
 
-    fun bilinearFilter(mainImage : ImageView, SourceValues: Array<IntArray>) :Bitmap   				//ГЛАВНЫЙ ФУНКЦИЯ
+    private fun bilinearFilter(mainImage : ImageView, rawCoordinates: Array<IntArray>) :Bitmap   				//ГЛАВНЫЙ ФУНКЦИЯ
     {
-        var A = Array(3, { DoubleArray(3) })
-        var Xmat = Array(3, { DoubleArray(3) })
-        var Tmat = Array(3, { DoubleArray(3) })
+        val pointsCoordinates = Array(3) { DoubleArray(3) }
+        val matr = Array(3) { DoubleArray(3) }
+        val newMatr: Array<DoubleArray>
 
-        A[0][0] = SourceValues[0][1].toDouble() // x
-        A[0][1] = SourceValues[1][1].toDouble()
-        A[0][2] = SourceValues[2][1].toDouble()
+        pointsCoordinates[0][0] = rawCoordinates[0][1].toDouble() // x
+        pointsCoordinates[0][1] = rawCoordinates[1][1].toDouble()
+        pointsCoordinates[0][2] = rawCoordinates[2][1].toDouble()
 
-        A[1][0] = SourceValues[0][0].toDouble() // y
-        A[1][1] = SourceValues[1][0].toDouble()
-        A[1][2] = SourceValues[2][0].toDouble()
+        pointsCoordinates[1][0] = rawCoordinates[0][0].toDouble() // y
+        pointsCoordinates[1][1] = rawCoordinates[1][0].toDouble()
+        pointsCoordinates[1][2] = rawCoordinates[2][0].toDouble()
 
-        A[2][0] = 1.0
-        A[2][1] = 1.0
-        A[2][2] = 1.0
+        pointsCoordinates[2][0] = 1.0
+        pointsCoordinates[2][1] = 1.0
+        pointsCoordinates[2][2] = 1.0
 
-        Xmat[0][0] = SourceValues[3][1].toDouble() // x
-        Xmat[0][1] = SourceValues[4][1].toDouble()
-        Xmat[0][2] = SourceValues[5][1].toDouble()
+        matr[0][0] = rawCoordinates[3][1].toDouble() // x
+        matr[0][1] = rawCoordinates[4][1].toDouble()
+        matr[0][2] = rawCoordinates[5][1].toDouble()
 
-        Xmat[1][0] = SourceValues[3][0].toDouble() // y
-        Xmat[1][1] = SourceValues[4][0].toDouble()
-        Xmat[1][2] = SourceValues[5][0].toDouble()
+        matr[1][0] = rawCoordinates[3][0].toDouble() // y
+        matr[1][1] = rawCoordinates[4][0].toDouble()
+        matr[1][2] = rawCoordinates[5][0].toDouble()
 
-        Xmat[2][0] = 1.0
-        Xmat[2][1] = 1.0
-        Xmat[2][2] = 1.0
-        val Ainv = findInverse(A)
-        Tmat = Xmat*Ainv
+        matr[2][0] = 1.0
+        matr[2][1] = 1.0
+        matr[2][2] = 1.0
+        val Ainv = findInverse(pointsCoordinates)
+        newMatr = matr*Ainv
 
 
-        val angle:Double = Math.atan2(Tmat[1][0], Tmat[1][1])
-        val sx:Double = Math.abs(sign(Tmat[0][0]) * sqrt(Tmat[0][0] * Tmat[0][0] + Tmat[0][1] * Tmat[0][1]))
-        val sy:Double = Math.abs(sign(Tmat[1][1]) * sqrt(Tmat[1][0] * Tmat[1][0] + Tmat[1][1] * Tmat[1][1]))
+        val angle:Double = Math.atan2(newMatr[1][0], newMatr[1][1])
+        val sx:Double = Math.abs(sign(newMatr[0][0]) * sqrt(newMatr[0][0] * newMatr[0][0] + newMatr[0][1] * newMatr[0][1]))
+        val sy:Double = Math.abs(sign(newMatr[1][1]) * sqrt(newMatr[1][0] * newMatr[1][0] + newMatr[1][1] * newMatr[1][1]))
 
         // ЗДЕСЬ ШПИЛИ ВИЛИ ПОВОРОТ
-        var bMap = (mainImage.drawable as BitmapDrawable).bitmap
+        var bitmap = (mainImage.drawable as BitmapDrawable).bitmap
         val matrix = Matrix()
         matrix.postRotate(angle.toFloat())
-        val scaledBitmap = Bitmap.createScaledBitmap(bMap, bMap.height, bMap.width, true)
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.height, bitmap.width, true)
         val rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.width, scaledBitmap.height, matrix, true)
-        bMap = rotatedBitmap
-        return bilinear_interpolate(bMap,sx,sy)
+        bitmap = rotatedBitmap
+        return bilinearInterpolate(bitmap,sx,sy)
 
     }
 
     fun get(tex: IntArray, x: Int, y: Int, width: Int): Int {
 
-        if (tex.size > x * width + y && x*width+y >= 0)
-            return tex[x * width + y]
+        return if (tex.size > x * width + y && x*width+y >= 0)
+            tex[x * width + y]
         else
-            return 0
+            0
     }
 
-    fun get_pixel(tex: IntArray, u: Double, v: Double, width: Int, height: Int, new_width: Int, new_height: Int): Int {
-        var u = u
-        var v = v
-        u = u * height - 0.5
-        v = v * width - 0.5
-        val x: Int = Math.floor(u).toInt()
-        var y: Int = Math.floor(v).toInt()
+    private fun getPixel(tex: IntArray, u: Double, v: Double, width: Int, height: Int, newWidth: Int, newHeight: Int): Int {
+        var uS = u
+        var vS = v
+        uS = uS * height - 0.5
+        vS = vS * width - 0.5
+        val x: Int = Math.floor(uS).toInt()
+        var y: Int = Math.floor(vS).toInt()
         if (y < 0) {
             y = 0
         }
-        val u_ratio = u - x
-        val v_ratio = v - y
-        val u_opposite = 1 - u_ratio
-        val v_opposite = 1 - v_ratio
+        val uRatio = uS - x
+        val vRatio = vS - y
+        val uOpposite = 1 - uRatio
+        val vOpposite = 1 - vRatio
         val A = Math.floor(
-            ((get(tex, x, y, width) shr 24 and 0xff) * u_opposite + (get(
+            ((get(tex, x, y, width) shr 24 and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y,
                 width
-            ) shr 24 and 0xff) * u_ratio) * v_opposite + ((get(
+            ) shr 24 and 0xff) * uRatio) * vOpposite + ((get(
                 tex,
                 x,
                 y + 1,
                 width
-            ) shr 24 and 0xff) * u_opposite + (get(tex, x + 1, y + 1, width) shr 24 and 0xff) * u_ratio) * v_ratio
+            ) shr 24 and 0xff) * uOpposite + (get(tex, x + 1, y + 1, width) shr 24 and 0xff) * uRatio) * vRatio
         )
             .toInt()
         val R = Math.floor(
-            ((get(tex, x, y, width) shr 16 and 0xff) * u_opposite + (get(
+            ((get(tex, x, y, width) shr 16 and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y,
                 width
-            ) shr 16 and 0xff) * u_ratio) * v_opposite + ((get(
+            ) shr 16 and 0xff) * uRatio) * vOpposite + ((get(
                 tex,
                 x,
                 y + 1,
                 width
-            ) shr 16 and 0xff) * u_opposite + (get(tex, x + 1, y + 1, width) shr 16 and 0xff) * u_ratio) * v_ratio
+            ) shr 16 and 0xff) * uOpposite + (get(tex, x + 1, y + 1, width) shr 16 and 0xff) * uRatio) * vRatio
         )
             .toInt()
         val G = Math.floor(
-            ((get(tex, x, y, width) shr 8 and 0xff) * u_opposite + (get(
+            ((get(tex, x, y, width) shr 8 and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y,
                 width
-            ) shr 8 and 0xff) * u_ratio) * v_opposite + ((get(tex, x, y + 1, width) shr 8 and 0xff) * u_opposite + (get(
+            ) shr 8 and 0xff) * uRatio) * vOpposite + ((get(tex, x, y + 1, width) shr 8 and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y + 1,
                 width
-            ) shr 8 and 0xff) * u_ratio) * v_ratio
+            ) shr 8 and 0xff) * uRatio) * vRatio
         )
             .toInt()
         val B = Math.floor(
-            ((get(tex, x, y, width) and 0xff) * u_opposite + (get(
+            ((get(tex, x, y, width) and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y,
                 width
-            ) and 0xff) * u_ratio) * v_opposite + ((get(tex, x, y + 1, width) and 0xff) * u_opposite + (get(
+            ) and 0xff) * uRatio) * vOpposite + ((get(tex, x, y + 1, width) and 0xff) * uOpposite + (get(
                 tex,
                 x + 1,
                 y + 1,
                 width
-            ) and 0xff) * u_ratio) * v_ratio
+            ) and 0xff) * uRatio) * vRatio
         )
             .toInt()
         return A and 0xff shl 24 or (R and 0xff shl 16) or (G and 0xff shl 8) or (B and 0xff)
     }
 
-    private fun bilinear_interpolate(bmp: Bitmap, scale_x:Double, scale_y:Double) :Bitmap {
+    private fun bilinearInterpolate(bmp: Bitmap, scale_x:Double, scale_y:Double) :Bitmap {
 
         val height = bmp.height // высота картинки и битмапа
         val width = bmp.width // ширина
@@ -191,7 +191,7 @@ class BilinearFilter {
                 val color = oldBitmapPixelsArray
                 val u: Double = (row.toDouble() - 0.5) / (new_height)
                 val v: Double = (column.toDouble() -0.5) / (new_width)
-                newBitmapPixelsArray[row * new_width + column] = get_pixel(oldBitmapPixelsArray, u, v, width, height, new_width, new_height)
+                newBitmapPixelsArray[row * new_width + column] = getPixel(oldBitmapPixelsArray, u, v, width, height, new_width, new_height)
             }
         }
 

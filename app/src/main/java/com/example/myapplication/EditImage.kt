@@ -3,11 +3,11 @@ package com.example.myapplication
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.Color.red
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import kotlin.math.roundToInt
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import kotlin.math.max
 import kotlin.math.min
@@ -94,42 +94,46 @@ class EditImage(BTMP: Bitmap) {
             val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
             val height = oldBitmap.height
             val width = oldBitmap.width
-            val oldBitmapPixelsArray = IntArray(width * height)
-            val newBitmap = Bitmap.createBitmap(width * 2, height * 2, Bitmap.Config.ARGB_8888)
-            val newBitmapPixelsArray = IntArray(width * 2 * height * 2)
-            oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+            if (width * height < 3000 * 3000) {
+                val oldBitmapPixelsArray = IntArray(width * height)
+                val newBitmap = Bitmap.createBitmap(width * 2, height * 2, Bitmap.Config.ARGB_8888)
+                val newBitmapPixelsArray = IntArray(width * 2 * height * 2)
+                oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
 
-            for (i in oldBitmapPixelsArray.indices) {
-                newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = oldBitmapPixelsArray[i]
+                for (i in oldBitmapPixelsArray.indices) {
+                    newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = oldBitmapPixelsArray[i]
 
-                // smoothing
-                if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
-                    val a = oldBitmapPixelsArray[i - width]
-                    val b = oldBitmapPixelsArray[i + 1]
-                    val c = oldBitmapPixelsArray[i - 1]
-                    val d = oldBitmapPixelsArray[i + width]
+                    // smoothing
+                    if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
+                        val a = oldBitmapPixelsArray[i - width]
+                        val b = oldBitmapPixelsArray[i + 1]
+                        val c = oldBitmapPixelsArray[i - 1]
+                        val d = oldBitmapPixelsArray[i + width]
 
-                    if (c == a && c != d && a != b) {
-                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = a
-                    }
-                    if (a == b && a != c && b != d) {
-                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = b
-                    }
-                    if (d == c && d != b && c != a) {
-                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = c
-                    }
-                    if (b == d && b != a && d != c) {
-                        newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = d
+                        if (c == a && c != d && a != b) {
+                            newBitmapPixelsArray[i * 2 + (i / width) * width * 2] = a
+                        }
+                        if (a == b && a != c && b != d) {
+                            newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + 1] = b
+                        }
+                        if (d == c && d != b && c != a) {
+                            newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2] = c
+                        }
+                        if (b == d && b != a && d != c) {
+                            newBitmapPixelsArray[i * 2 + (i / width) * width * 2 + width * 2 + 1] = d
+                        }
                     }
                 }
-            }
 
-            newBitmap.setPixels(newBitmapPixelsArray, 0, width * 2, 0, 0, width * 2, height * 2)
-            mainImage.setImageBitmap(newBitmap)
-            Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+                newBitmap.setPixels(newBitmapPixelsArray, 0, width * 2, 0, 0, width * 2, height * 2)
+                mainImage.setImageBitmap(newBitmap)
+                Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+            }
+            else
+                Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
         }
         catch (e: OutOfMemoryError) {
             Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
@@ -141,68 +145,76 @@ class EditImage(BTMP: Bitmap) {
             val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
             val height = oldBitmap.height
             val width = oldBitmap.width
-            val oldBitmapPixelsArray = IntArray(width * height)
-            val newBitmap = Bitmap.createBitmap(width * 3, height * 3, Bitmap.Config.ARGB_8888)
-            val newBitmapPixelsArray = IntArray(width * 3 * height * 3)
-            oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
+            if (width * height < 2000 * 2000) {
+                val oldBitmapPixelsArray = IntArray(width * height)
+                val newBitmap = Bitmap.createBitmap(width * 3, height * 3, Bitmap.Config.ARGB_8888)
+                val newBitmapPixelsArray = IntArray(width * 3 * height * 3)
+                oldBitmap.getPixels(oldBitmapPixelsArray, 0, width, 0, 0, width, height)
 
-            for (i in oldBitmapPixelsArray.indices) {
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 1] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = oldBitmapPixelsArray[i]
-                newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = oldBitmapPixelsArray[i]
+                for (i in oldBitmapPixelsArray.indices) {
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 1] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = oldBitmapPixelsArray[i]
+                    newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = oldBitmapPixelsArray[i]
 
-                // smoothing
-                if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
-                    val a = oldBitmapPixelsArray[i - width - 1]
-                    val b = oldBitmapPixelsArray[i - width]
-                    val c = oldBitmapPixelsArray[i - width + 1]
-                    val d = oldBitmapPixelsArray[i - 1]
-                    val e = oldBitmapPixelsArray[i]
-                    val f = oldBitmapPixelsArray[i + 1]
-                    val g = oldBitmapPixelsArray[i + width - 1]
-                    val h = oldBitmapPixelsArray[i + width]
-                    val j = oldBitmapPixelsArray[i + width + 1]
+                    // smoothing
+                    if (i >= width && i <= width * (height - 1) && i % width != 0 && i % width != width - 1) {
+                        val a = oldBitmapPixelsArray[i - width - 1]
+                        val b = oldBitmapPixelsArray[i - width]
+                        val c = oldBitmapPixelsArray[i - width + 1]
+                        val d = oldBitmapPixelsArray[i - 1]
+                        val e = oldBitmapPixelsArray[i]
+                        val f = oldBitmapPixelsArray[i + 1]
+                        val g = oldBitmapPixelsArray[i + width - 1]
+                        val h = oldBitmapPixelsArray[i + width]
+                        val j = oldBitmapPixelsArray[i + width + 1]
 
-                    if (d == b && d != h && b != f) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = d
-                    }
-                    if ((d == b && d != h && b != f && e != c) ||
-                        (b == f && b != d && f != h && e != a)) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = b
-                    }
-                    if (b == f && b != d && f != h) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = f
-                    }
-                    if ((h == d && h != f && d != b && e != a) ||
-                        (d == b && d != h && b != f && e != g)) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = d
-                    }
-                    if ((b == f && b != d && f != h && e != j) ||
-                        (f == h && f != b && h != d && e != c)) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = f
-                    }
-                    if (h == d && h != f && d != b) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = d
-                    }
-                    if ((f == h && f != b && h != d && e != g) ||
-                        (h == d && h != f && d != b && e != j)) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = h
-                    }
-                    if (f == h && f != b && h != d) {
-                        newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = f
+                        if (d == b && d != h && b != f) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6] = d
+                        }
+                        if ((d == b && d != h && b != f && e != c) ||
+                            (b == f && b != d && f != h && e != a)
+                        ) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 1] = b
+                        }
+                        if (b == f && b != d && f != h) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + 2] = f
+                        }
+                        if ((h == d && h != f && d != b && e != a) ||
+                            (d == b && d != h && b != f && e != g)
+                        ) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3] = d
+                        }
+                        if ((b == f && b != d && f != h && e != j) ||
+                            (f == h && f != b && h != d && e != c)
+                        ) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 + 2] = f
+                        }
+                        if (h == d && h != f && d != b) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2] = d
+                        }
+                        if ((f == h && f != b && h != d && e != g) ||
+                            (h == d && h != f && d != b && e != j)
+                        ) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 1] = h
+                        }
+                        if (f == h && f != b && h != d) {
+                            newBitmapPixelsArray[i * 3 + (i / width) * width * 6 + width * 3 * 2 + 2] = f
+                        }
                     }
                 }
-            }
 
-            newBitmap.setPixels(newBitmapPixelsArray, 0, width * 3, 0, 0, width * 3, height * 3)
-            mainImage.setImageBitmap(newBitmap)
-            Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+                newBitmap.setPixels(newBitmapPixelsArray, 0, width * 3, 0, 0, width * 3, height * 3)
+                mainImage.setImageBitmap(newBitmap)
+                Toast.makeText(context, "${newBitmap.width} x ${newBitmap.height}", Toast.LENGTH_SHORT).show()
+            }
+            else
+                Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
         }
         catch (e: OutOfMemoryError) {
             Toast.makeText(context, "The image is too large", Toast.LENGTH_SHORT).show()
@@ -313,20 +325,20 @@ class EditImage(BTMP: Bitmap) {
     fun blur(mainImage: ImageView) {
         mainImage.setOnTouchListener(View.OnTouchListener { _, event ->
             // click coordinates
-            var rawX = event.x
-            var rawY = event.y
+            val rawX = event.x
+            val rawY = event.y
 
-            var oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
-            var height = oldBitmap.height
-            var width = oldBitmap.width
+            val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
+            val height = oldBitmap.height
+            val width = oldBitmap.width
             // get bitmap coordinates
             val x = (rawX.toDouble() * (width.toDouble() / mainImage.width.toDouble())).toInt()
             val y = (rawY.toDouble() * (height.toDouble() / mainImage.height.toDouble())).toInt()
 
 //            coordinates.text = "$x | $y"
-            var oldBittmapPixelsArray = IntArray(width * height) // empty pixels array
-            var newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // new bitmap
-            var newBitmapPixelsArray = oldBittmapPixelsArray // the same for new bitmap
+            val oldBittmapPixelsArray = IntArray(width * height) // empty pixels array
+            val newBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888) // new bitmap
+            // oldBittmapPixelsArray // the same for new bitmap
             oldBitmap.getPixels(oldBittmapPixelsArray, 0, width, 0, 0, width, height) // filling pixels
             var count = 0
             val matrix = Array(height) { IntArray(width) } //будущая матрица
@@ -339,17 +351,14 @@ class EditImage(BTMP: Bitmap) {
             var greenSum = 0
             var blueSum = 0
 
-            var eps = ((sqrt(height.toDouble() * width.toDouble())) / (100)).toInt() // ЭТО ОКРЕСТНОСТЬ БЛЮРА (тип радиус), КОРОЧЕ НАДО ПРИДУМАТЬ, как ее менять в зависимости от разрешения
+            val eps = ((sqrt(height.toDouble() * width.toDouble())) / (100)).toInt() // ЭТО ОКРЕСТНОСТЬ БЛЮРА (тип радиус), КОРОЧЕ НАДО ПРИДУМАТЬ, как ее менять в зависимости от разрешения
 
             for (i in y - eps..y + eps){
                 for (j in x - eps..x + eps){
                     if (i in 0..(height - 1) && j >= 0 && j < width){
-                        var red = 0
-                        var green = 0
-                        var blue = 0
-                        red = matrix[i][j] and 0x00ff0000 shr 16
-                        green = matrix[i][j] and 0x0000ff00 shr 8
-                        blue = matrix[i][j] and 0x000000ff shr 0
+                        val red: Int = matrix[i][j] and 0x00ff0000 shr 16
+                        val green: Int = matrix[i][j] and 0x0000ff00 shr 8
+                        val blue: Int = matrix[i][j] and 0x000000ff shr 0
                         redSum += red
                         greenSum += green
                         blueSum += blue
