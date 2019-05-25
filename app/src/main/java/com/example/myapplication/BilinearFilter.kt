@@ -66,7 +66,8 @@ class BilinearFilter {
         val pointsCoordinates = Array(3) { DoubleArray(3) }
         val matr = Array(3) { DoubleArray(3) }
         val newMatr: Array<DoubleArray>
-
+        // POINTS COORDINATES TO FIRST MATRIX
+        // T MATRIX
         pointsCoordinates[0][0] = rawCoordinates[0][1].toDouble() // x
         pointsCoordinates[0][1] = rawCoordinates[1][1].toDouble()
         pointsCoordinates[0][2] = rawCoordinates[2][1].toDouble()
@@ -76,7 +77,8 @@ class BilinearFilter {
         pointsCoordinates[2][0] = 1.0
         pointsCoordinates[2][1] = 1.0
         pointsCoordinates[2][2] = 1.0
-        // COORDINATES TO FIRST MATRIX
+        // POINTS COORDINATES TO SECOND MATRIX
+        // A MATRIX
         matr[0][0] = rawCoordinates[3][1].toDouble() // x
         matr[0][1] = rawCoordinates[4][1].toDouble()
         matr[0][2] = rawCoordinates[5][1].toDouble()
@@ -86,7 +88,6 @@ class BilinearFilter {
         matr[2][0] = 1.0
         matr[2][1] = 1.0
         matr[2][2] = 1.0
-        // COORDINATES TO SECOND MATRIX
 
         // T * A = X
         // T = x * A^(-1)
@@ -96,6 +97,7 @@ class BilinearFilter {
         // ANGLE
         val angle:Double = Math.atan2(newMatr[1][0], newMatr[1][1])
 
+        // SCALE COEFFICIENTS
         val sx:Double = Math.abs(sign(newMatr[0][0]) * sqrt(newMatr[0][0] * newMatr[0][0] + newMatr[0][1] * newMatr[0][1]))
         val sy:Double = Math.abs(sign(newMatr[1][1]) * sqrt(newMatr[1][0] * newMatr[1][0] + newMatr[1][1] * newMatr[1][1]))
 
