@@ -331,7 +331,7 @@ class EditImage(BTMP: Bitmap) {
             val oldBitmap = (mainImage.drawable as BitmapDrawable).bitmap
             val height = oldBitmap.height
             val width = oldBitmap.width
-            // get bitmap coordinates
+            // numberGet bitmap coordinates
             val x = (rawX.toDouble() * (width.toDouble() / mainImage.width.toDouble())).toInt()
             val y = (rawY.toDouble() * (height.toDouble() / mainImage.height.toDouble())).toInt()
 

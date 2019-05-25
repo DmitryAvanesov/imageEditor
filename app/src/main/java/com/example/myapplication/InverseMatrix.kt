@@ -1,7 +1,7 @@
 package com.example.myapplication
 
 class InverseMatrix{
-    fun findInverse(mat: Array<DoubleArray>): Array<DoubleArray> {
+    fun inverseMatrix(mat: Array<DoubleArray>): Array<DoubleArray> {
         // GET AN INVERSE MATRIX
         val det: Double = mat[0][0] * ((mat[1][1] * mat[2][2]) - (mat[2][1] * mat[1][2])) - mat[0][1] * (mat[1][0] * mat[2][2] - mat[2][0] * mat[1][2]) + mat[0][2] * (mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1])
         val n = 3
