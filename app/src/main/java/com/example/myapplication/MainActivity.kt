@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         scaleSpinner.visibility = View.INVISIBLE
     }
 
-    // SO NIGGAS THAT'S MY FUCKING CHECK FOR PERMISSIONS OK?
+    // SO GUYS THAT'S MY F*CKING CHECK FOR PERMISSIONS OK?
     private fun checkPermissionsForGallery(){
         // FOR GALLERY REQ CODE
         reqCodeForAction = 2002
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // SOME KIND OF PERMISSIONS CODE SHIT
+    // SOME KIND OF PERMISSIONS CODE
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         //called when user presses ALLOW or DENY from Permission Request Popup
         when(requestCode){
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // OPEN YOUR CAMERA NIGGA
+    // OPEN YOUR CAMERA
     private fun openCamera() {
         val values = ContentValues()
         values.put(MediaStore.Images.Media.TITLE, "New Picture")
@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(cameraIntent, imageCaptureCode)
     }
 
-    // OPEN YOUR GALLERY NIGGA
+    // OPEN YOUR GALLERY
     private fun pickImageFromGallery() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, imagePickCode)
     }
 
-    // SAVE YOUR ASS IMAGE NIGGA
+    // SAVE YOUR ASS IMAGE
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //called when image was captured from camera intent
         if (resultCode == Activity.RESULT_OK && requestCode == imagePickCode){
